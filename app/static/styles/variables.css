@@ -1,0 +1,11 @@
+:root {
+    --main-background: white;
+    --main-colour: var(--rich-black);
+    --primary: #14213d;
+    --link: #007bff;
+    --danger: var(--imperial-red);
+    --secondary: #fca311;
+    --platinum: #e5e5e5;
+    --imperial-red: #ef233c;
+    --rich-black: #00171f;
+}
