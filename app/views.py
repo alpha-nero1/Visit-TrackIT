@@ -50,6 +50,7 @@ def authenticate_user(request, username, password) :
         # No backend authenticated the credentials
 
 
+# Home view.
 class HomeView(View):
     template_name = 'app/home.html'
 
