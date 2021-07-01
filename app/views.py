@@ -11,9 +11,9 @@ from django.contrib.auth import authenticate, login, logout
 
 visit_url_prefix = 'https://visit-trackit.herokuapp.com/'
 
-def get_qrcode_stream(str):
+def get_qrcode_stream(uri):
     factory = qrcode.image.svg.SvgImage
-    img = qrcode.make(str, image_factory=factory, box_size=20)
+    img = qrcode.make(uri, image_factory=factory, box_size=20)
     stream = BytesIO()
     img.save(stream)
     return stream
@@ -23,10 +23,10 @@ def get_or_set_domain(domain_name, user):
     domain = None
     domain_uri = visit_url_prefix + 'visit?domain=' + domain_name + '&username=' + user.username
     try:
-        domain = Domain.objects.get(name=domain_uri, user=user)
+        domain = Domain.objects.get(name=domain_name, user=user)
     except:
         stream = get_qrcode_stream(domain_uri)
-        domain = Domain(name=domain_uri, qr_code=stream.getvalue().decode(), user=user)
+        domain = Domain(name=domain_name, qr_code=stream.getvalue().decode(), user=user)
         domain.save()
     return domain
 
@@ -55,7 +55,7 @@ class HomeView(View):
     template_name = 'app/home.html'
 
     def get(self, request):
-        domains = Domain.objects.all()
+        domains = Domain.objects.filter(user__username=request.user.username)
         return render(
             request,
             self.template_name,
@@ -76,9 +76,12 @@ class DomainView(View):
 
     def get(self, request):
         domain_name = request.GET.get('domain')
+        print('aa name: ', domain_name)
         try:
             domain = Domain.objects.get(name=domain_name, user=request.user)
+            print('aa got domain: ', domain.name)
             visits = Visit.objects.filter(domain=domain)
+            print('aa visits: ', visits)
 
             return render(
                 request,
@@ -88,7 +91,8 @@ class DomainView(View):
                     'visits': visits
                 }
             )
-        except:
+        except Exception as e:
+            print(e)
             return redirect('/')
 
 
