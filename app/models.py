@@ -14,7 +14,7 @@ class BaseModel(models.Model):
 
 class Domain(BaseModel):
     name = models.CharField(max_length=255)
-    qr_code = models.CharField(max_length=1000)
+    qr_code = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
