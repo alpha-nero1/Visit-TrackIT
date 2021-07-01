@@ -4,6 +4,8 @@ import qrcode
 import qrcode.image.svg
 from io import BytesIO
 from app.models import Domain, Visit
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 def get_or_set_domain(domain_name):
     domain = None
@@ -19,16 +21,36 @@ def get_or_set_domain(domain_name):
         domain.save()
     return domain
 
+def signup_user(username,email,password):
+    try:
+        user = User.objects.create_user(username, email,password)
+        user.save()
+        print(user)
+    except e:
+        print('Already Present',e)
+
+def authenticate_user(userName,passWord) :
+    user = authenticate(username=userName, password=passWord)
+    print(user)
+    if user is not None:
+    # A backend authenticated the credentials
+        return redirect('/')
+    else:
+        return redirect('/login')
+    # No backend authenticated the credentials
+
 class HomeView(View):
     template_name = 'app/home.html'
 
     def get(self, request):
         domains = Domain.objects.all()
+        print(request.user)
         return render(
             request,
             self.template_name,
             {
-                'domains': domains
+                'domains': domains,
+                'user':request.user
             }
         )
 
@@ -52,7 +74,8 @@ class DomainView(View):
             self.template_name,
             {
                 'domain': domain,
-                'visits': visits
+                'visits': visits,
+                'user':request.user
             }
         )
 
@@ -65,3 +88,27 @@ class VisitView(View):
         visit.save()
         # redirect to actual site.
         return redirect(domain_url)
+
+
+
+
+class LoginView(View):
+    def get(self, request):        
+        return render(request,'app/login.html')
+    def post(self,request):
+        username = request.POST.get('username') 
+        password=request.POST.get('password')
+        return authenticate_user(username, password)
+         
+        #return redirect('/')
+
+
+class SignupView(View):
+    def get(self, request):        
+        return render(request,'app/signup.html')
+    def post(self,request):
+         username = request.POST.get('username') 
+         password=request.POST.get('password')
+         email=request.POST.get('email')
+         signup_user(username,email,password)
+         return authenticate_user(username, password)
