@@ -109,11 +109,28 @@ nav a:hover {
     margin-bottom: 1rem;
 }
 
-.domains-list {
+.list {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     margin-top: 4rem;
+}
+
+.link-btn:hover {
+    color: var(--link);
+    cursor: pointer;
+}
+
+.link-danger {
+    color: var(--danger);
+}
+
+.active {
+    color: var(--link);
+}
+
+.m-r-1 {
+    margin-right: 1rem;
 }

@@ -9,6 +9,11 @@
     width: 100%;
 }
 
+.flex-row-small {
+    display: flex;
+    flex-direction: row;
+}
+
 .flex-row-start {
     display: flex;
     flex-direction: row;

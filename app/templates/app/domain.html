@@ -1,5 +1,6 @@
   
 {% load static %}
+{% load tz %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,12 +26,15 @@
                     <h1 class="title">{{ domain.name }}</h1>
                     <h2>QR Code</h2>
                     {{ domain.qr_code|safe }}
-                    <h2>View the statistics for domain</h2>
+                    <h2>Total visits: {{visits|length}}</h2>
                 </header>
-                <section class="domains-list">
-                    <h2>Total visits:</h2>
-                    <div>
-                    </div>
+                <section class="list">
+                    <h2>Recent visits:</h2>
+                    {% for visit in visits %}
+                        <div class="card domain">
+                            <p>Visit at {{visit.created_at|localtime}}</p>
+                        </div>
+                    {% endfor %}
                 </section>
             </div>
         </div>
