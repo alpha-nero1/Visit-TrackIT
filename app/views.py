@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
+# When developing locally uncomment and replace string with '/'
 visit_url_prefix = 'https://visit-trackit.herokuapp.com/'
 
 def get_qrcode_stream(uri):
