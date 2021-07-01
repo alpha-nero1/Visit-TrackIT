@@ -23,10 +23,10 @@ def get_or_set_domain(domain_name, user):
     domain = None
     domain_uri = visit_url_prefix + 'visit?domain=' + domain_name + '&username=' + user.username
     try:
-        domain = Domain.objects.get(name=domain_name, user=user)
+        domain = Domain.objects.get(name=domain_uri, user=user)
     except:
-        stream = get_qrcode_stream(domain_name)
-        domain = Domain(name=domain_name, qr_code=stream.getvalue().decode(), user=user)
+        stream = get_qrcode_stream(domain_uri)
+        domain = Domain(name=domain_uri, qr_code=stream.getvalue().decode(), user=user)
         domain.save()
     return domain
 
