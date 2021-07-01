@@ -21,25 +21,25 @@
         <div class="content-wrapper">
             {% include '../common/navbar.html' %}
             <div class="content">
-                <header>
+                <header class="home-page-header">
                     <h1 class="title">Welcome to Visit-TrackIT</h1>
-                    <h2>Enter a site url and we will generate a QR code for you that when used, will track visits to that site.</h2>
-                </header>
-                <form class="central-form" action="" method="post">
-                    {% csrf_token %}
-                    <div class="central-form-inner">
-                        <div class="flex-column card">
-                            <input 
-                                class="form-control" 
-                                placeholder="Site e.g. (https://infotrackgo.com.au)" 
-                                name="domain"
-                            />
-                            <div class="flex-row end">
-                                <button class="btn btn-primary say-button" type="submit">Generate!</button>
+                    <h2>Enter a site URL and we will generate a QR code for you that when used, will track visits to that site.</h2>
+                    <form class="central-form" action="" method="post">
+                        {% csrf_token %}
+                        <div class="central-form-inner">
+                            <div class="flex-column card">
+                                <input 
+                                    class="form-control" 
+                                    placeholder="Site e.g. (https://infotrackgo.com.au)" 
+                                    name="domain"
+                                />
+                                <div class="flex-row end">
+                                    <button class="btn btn-primary say-button" type="submit">Generate!</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </header>
                 <section class="list">
                     <h2>Your domains:</h2>
                     <div>

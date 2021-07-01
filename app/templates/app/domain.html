@@ -26,16 +26,32 @@
                     <h1 class="title">{{ domain.name }}</h1>
                     <h2>QR Code</h2>
                     {{ domain.qr_code|safe }}
-                    <h2>Total visits: {{visits|length}}</h2>
+                    <form method="POST" action="/download/">
+                        {% csrf_token %}
+                        <input name="domain" value={{domain.name}} hidden="true"></input>
+                        <button class="btn btn-primary download-btn" type="submit">Download</button>
+                    </form>
+                    {% if visits|length %}
+                        <h2>Total visits: {{visits|length}}</h2>
+                    {% else %}
+                        <h2>No visits yet</h2>
+                    {% endif %}
                 </header>
-                <section class="list">
-                    <h2>Recent visits:</h2>
-                    {% for visit in visits %}
-                        <div class="card domain">
-                            <p>Visit at {{visit.created_at|localtime}}</p>
-                        </div>
-                    {% endfor %}
-                </section>
+                {% if visits|length %}
+                    <section class="list">
+                        <h2>Recent visits:</h2>
+                        {% for visit in visits %}
+                            <div class="card domain">
+                                <p>Visit at {{visit.created_at|localtime}}</p>
+                            </div>
+                        {% endfor %}
+                    </section>
+                {% else %}
+                    <section class="central">
+                        <image class="no-visits-img" src="{%  static  'images/puppy.jpg'  %}"></image>
+                        <h3>Once your QR code starts accumulating visits, you will see a recent log here.</h3>
+                    </section>
+                {% endif %}
             </div>
         </div>
         {% include '../common/footer.html' %}
