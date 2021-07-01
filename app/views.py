@@ -77,12 +77,9 @@ class DomainView(View):
 
     def get(self, request):
         domain_name = request.GET.get('domain')
-        print('aa name: ', domain_name)
         try:
             domain = Domain.objects.get(name=domain_name, user=request.user)
-            print('aa got domain: ', domain.name)
             visits = Visit.objects.filter(domain=domain)
-            print('aa visits: ', visits)
 
             return render(
                 request,

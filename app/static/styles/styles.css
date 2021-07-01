@@ -4,6 +4,12 @@ html, body {
     height: 100%;
 }
 
+h1, h2 {
+    text-align: center;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
 .title {
     font-size: 50px;
     font-weight: bold;
