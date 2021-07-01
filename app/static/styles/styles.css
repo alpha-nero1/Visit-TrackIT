@@ -130,6 +130,10 @@ nav a:hover {
     margin-bottom: 2rem;
 }
 
+.light {
+    color: white;
+}
+
 .list {
     display: flex;
     flex-direction: column;
@@ -165,6 +169,15 @@ nav a:hover {
 .m-r-1 {
     margin-right: 1rem;
 }
+
+.m-b-0 {
+    margin-bottom: 0;
+}
+
+.m-b-1 {
+    margin-bottom: 2rem;
+}
+
 
 .no-visits-img {
     margin: 2rem;

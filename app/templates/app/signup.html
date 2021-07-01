@@ -29,7 +29,7 @@
       {% include '../common/navbar.html' %}
       <div class="content">
         <header>
-          <h1 class="title">Sign up Page</h1>
+          <h1 class="title">Sign Up Page</h1>
           <h2>Choose your username and password</h2>
         </header>
         <form class="central-form" action="" method="post">
@@ -40,16 +40,23 @@
                 class="form-control"
                 placeholder="Username"
                 name="username"
+                type="text"
               />
-              <input class="form-control" placeholder="Email" name="email" />
+              <input 
+                class="form-control" 
+                placeholder="Email" 
+                name="email"
+                type="email"
+              />
               <input
                 class="form-control"
                 placeholder="Password"
                 name="password"
+                type="password"
               />
               <div class="flex-row end">
                 <button class="btn btn-primary say-button" type="submit">
-                  signUp!
+                  Sign up!
                 </button>
               </div>
             </div>

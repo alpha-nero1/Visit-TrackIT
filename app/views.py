@@ -7,7 +7,7 @@ from app.models import Domain, Visit
 from django.core.files.base import ContentFile
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 
 visit_url_prefix = 'https://visit-trackit.herokuapp.com/'
 
@@ -19,14 +19,14 @@ def get_qrcode_stream(str):
     return stream
 
 
-def get_or_set_domain(domain_name):
+def get_or_set_domain(domain_name, user):
     domain = None
-    domain_uri = visit_url_prefix + 'visit?domain=' + domain_name
+    domain_uri = visit_url_prefix + 'visit?domain=' + domain_name + '&username=' + user.username
     try:
-        domain = Domain.objects.get(name=domain_name)
+        domain = Domain.objects.get(name=domain_name, user=user)
     except:
         stream = get_qrcode_stream(domain_name)
-        domain = Domain(name=domain_name, qr_code=stream.getvalue().decode())
+        domain = Domain(name=domain_name, qr_code=stream.getvalue().decode(), user=user)
         domain.save()
     return domain
 
@@ -35,20 +35,19 @@ def signup_user(username,email,password):
     try:
         user = User.objects.create_user(username, email,password)
         user.save()
-        print(user)
     except e:
-        print('Already Present',e)
+        print('Signup error', e)
 
 
-def authenticate_user(userName,passWord) :
-    user = authenticate(username=userName, password=passWord)
-    print(user)
+def authenticate_user(request, username, password) :
+    user = authenticate(request, username=username, password=password)
     if user is not None:
-    # A backend authenticated the credentials
+        login(request, user)
+        # A backend authenticated the credentials
         return redirect('/')
     else:
         return redirect('/login')
-    # No backend authenticated the credentials
+        # No backend authenticated the credentials
 
 
 class HomeView(View):
@@ -56,19 +55,17 @@ class HomeView(View):
 
     def get(self, request):
         domains = Domain.objects.all()
-        print(request.user)
         return render(
             request,
             self.template_name,
             {
-                'domains': domains,
-                'user':request.user
+                'domains': domains
             }
         )
 
     def post(self, request):
         domain_name = request.POST.get('domain')        
-        domain = get_or_set_domain(domain_name)
+        domain = get_or_set_domain(domain_name, request.user)
         # Redirect to the page for that domain.
         return redirect('/view?domain=' + domain.name)
         
@@ -78,25 +75,28 @@ class DomainView(View):
 
     def get(self, request):
         domain_name = request.GET.get('domain')
-        domain = Domain.objects.get(name=domain_name)
-        visits = Visit.objects.filter(domain=domain)
+        try:
+            domain = Domain.objects.get(name=domain_name, user=request.user)
+            visits = Visit.objects.filter(domain=domain)
 
-        return render(
-            request,
-            self.template_name,
-            {
-                'domain': domain,
-                'visits': visits,
-                'user':request.user
-            }
-        )
+            return render(
+                request,
+                self.template_name,
+                {
+                    'domain': domain,
+                    'visits': visits
+                }
+            )
+        except:
+            return redirect('/')
 
 
 class VisitView(View):
     def get(self, request):
         domain_url = request.GET.get('domain')
+        username = request.GET.get('username')
         # Create visit object.
-        visit = Visit(domain=Domain.objects.get(name=domain_url))
+        visit = Visit(domain=Domain.objects.get(name=domain_url, user__username=username))
         visit.save()
         # redirect to actual site.
         return redirect(domain_url)
@@ -122,7 +122,7 @@ class LoginView(View):
     def post(self,request):
         username = request.POST.get('username') 
         password=request.POST.get('password')
-        return authenticate_user(username, password)
+        return authenticate_user(request, username, password)
 
 
 class SignupView(View):
@@ -130,8 +130,14 @@ class SignupView(View):
         return render(request,'app/signup.html')
 
     def post(self,request):
-         username = request.POST.get('username') 
-         password=request.POST.get('password')
-         email=request.POST.get('email')
-         signup_user(username,email,password)
-         return authenticate_user(username, password)
+        username = request.POST.get('username') 
+        password=request.POST.get('password')
+        email=request.POST.get('email')
+        signup_user(username,email,password)
+        return authenticate_user(request, username, password)
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('/')

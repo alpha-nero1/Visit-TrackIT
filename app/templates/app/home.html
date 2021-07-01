@@ -24,6 +24,7 @@
                 <header class="home-page-header">
                     <h1 class="title">Welcome to Visit-TrackIT</h1>
                     <h2>Enter a site URL and we will generate a QR code for you that when used, will track visits to that site.</h2>
+                    {% if request.user.username %}
                     <form class="central-form" action="" method="post">
                         {% csrf_token %}
                         <div class="central-form-inner">
@@ -34,22 +35,45 @@
                                     name="domain"
                                 />
                                 <div class="flex-row end">
-                                    <button class="btn btn-primary say-button" type="submit">Generate!</button>
+                                    <button
+                                        class="btn btn-primary say-button" 
+                                        type="submit"
+                                    >
+                                        Generate!
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </form>
-                </header>
-                <section class="list">
-                    <h2>Your domains:</h2>
-                    <div>
-                        {% for domain in domains %}
-                            <div class="card domain">
-                                <a href="/view?domain={{domain.name}}">{{domain.name}}</a>
+                    {% else %}
+                        <div class="central-form">
+                            <div class="central-form-inner">
+                                <div class="flex-column card">
+                                    <h2 class="m-b-1">Get started by signing up</h2>
+                                    <a class="btn btn-primary" href="/signup">Signup</a>
+                                </div>
                             </div>
-                        {% endfor %}
-                    </div>
-                </section>
+                        </div>
+                    {% endif %}
+                </header>
+                {% if requets.user.username and domains|length %}
+                    <section class="list">
+                        <h2>Your domains:</h2>
+                        <div>
+                            {% for domain in domains %}
+                                <div class="card domain">
+                                    <a href="/view?domain={{domain.name}}">{{domain.name}}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% else %}
+                    <section class="list">
+                        <h2>Use Visit-TrackIT to generate QRCodes and see how and when they accumulate visits to a site!</h2>
+                        <p></p>
+                    </section>
+                {% endif %}
+                
             </div>
         </div>
         {% include '../common/footer.html' %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class BaseModel(models.Model):
@@ -12,8 +13,12 @@ class BaseModel(models.Model):
 
 
 class Domain(BaseModel):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     qr_code = models.CharField(max_length=1000)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+
+    class Meta:
+        unique_together = ('name', 'user',)
 
 
 class Visit(BaseModel):

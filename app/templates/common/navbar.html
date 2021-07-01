@@ -1,8 +1,12 @@
 <nav>
     <a href="/"><h4>Visit-TrackIT</h4></a>
     <div class="flex-row-small align-center">
-        <h2 class="light m-r-1">{{user.username}}</h2>
-        <a class="btn btn-primary m-r-1" href="/login">Login</a>
-        <a class="btn btn-primary" href="/signup">Signup</a>
+        <h4 class="light m-r-1 m-b-0">{{request.user.username}}</h4>
+        {% if request.user.username %}
+            <a class="btn btn-primary" href="/logout">Logout</a>
+        {% else %}
+            <a class="btn btn-primary m-r-1" href="/login">Login</a>
+            <a class="btn btn-primary" href="/signup">Signup</a>
+        {% endif %}
     </div>
 </nav>
