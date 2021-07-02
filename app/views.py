@@ -85,7 +85,7 @@ class DomainView(View):
         domain_name = request.GET.get('domain')
         try:
             domain = Domain.objects.get(name=domain_name, user=request.user)
-            visits = Visit.objects.filter(domain=domain)
+            visits = Visit.objects.filter(domain=domain).order_by('-created_at')
 
             return render(
                 request,
