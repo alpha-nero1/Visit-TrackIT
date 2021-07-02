@@ -12,6 +12,12 @@ from django.contrib.auth import authenticate, login, logout
 # When developing locally uncomment and replace string with '/'
 visit_url_prefix = 'https://visit-trackit.herokuapp.com/'
 
+
+def get_visit_url(domain_name, username):
+    domain_url = visit_url_prefix + 'visit?domain=' + domain_name + '&username=' + username
+    return domain_url
+
+
 def get_qrcode_stream(uri):
     factory = qrcode.image.svg.SvgImage
     img = qrcode.make(uri, image_factory=factory, box_size=20)
@@ -22,7 +28,7 @@ def get_qrcode_stream(uri):
 
 def get_or_set_domain(domain_name, user):
     domain = None
-    domain_uri = visit_url_prefix + 'visit?domain=' + domain_name + '&username=' + user.username
+    domain_uri = get_visit_url(domain_name, user.username)
     try:
         domain = Domain.objects.get(name=domain_name, user=user)
     except:
@@ -108,7 +114,7 @@ class VisitView(View):
 class DownloadView(View):
     def post(self, request):
         domain_url = request.POST.get('domain')
-        visit_uri = visit_url_prefix + '/visit?domain=' + domain_url
+        visit_uri = get_visit_url(domain_url, request.user.username)
         string_to_return = get_qrcode_stream(visit_uri).getvalue()
 
         file_to_send = ContentFile(string_to_return)
